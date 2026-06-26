@@ -9,11 +9,8 @@ import { wonderNarration } from '../utils/narration';
 
 function WonderRoute({ onInvestigate, audioEnabled }) {
   useEffect(() => {
-    stopNarration();
-    if (audioEnabled) {
-      narrate(wonderNarration());
-    }
-  }, [audioEnabled]);
+    // Wonder narration handled by App.js
+  }, []);
   
   return (
     <div className="phase-screen">

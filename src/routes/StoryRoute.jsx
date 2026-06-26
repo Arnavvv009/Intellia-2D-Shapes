@@ -12,12 +12,9 @@ function StoryRoute({ onCompleteStory, audioEnabled, slideIndex, setSlideIndex }
   const total = STORY_SLIDES.length;
   const pct = Math.round(((slideIndex + 1) / total) * 100);
 
+  // Story narration handled by App.js
   useEffect(() => {
-    stopNarration();
-    if (audioEnabled) {
-      narrate(getStoryNarration(slideIndex));
-    }
-  }, [audioEnabled, slideIndex]);
+  }, [slideIndex]);
   
   return (
     <div className="phase-screen">

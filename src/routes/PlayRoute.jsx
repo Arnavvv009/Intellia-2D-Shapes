@@ -21,11 +21,8 @@ const shuffleArray = (array) => {
 
 function PlayRoute({ worldScores: propWorldScores, setWorldScores, onCompletePlay, audioEnabled }) {
   useEffect(() => {
-    stopNarration();
-    if (audioEnabled) {
-      narrate(playNarration());
-    }
-  }, [audioEnabled]);
+    // Play narration handled by App.js
+  }, []);
   const [mode, setMode] = useState('select'); // 'select' | 'quiz'
   const [currentWorldId, setCurrentWorldId] = useState(0);
   // Initialize worldUnlocked: first world is always unlocked, then any world with a score is unlocked

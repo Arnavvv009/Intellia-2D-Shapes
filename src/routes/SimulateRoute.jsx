@@ -90,11 +90,8 @@ function StationA({ isActive, audioEnabled }) {
   const detectedShape = useMemo(() => classifyShapeFromVertices(vertices), [vertices]);
   
   useEffect(() => {
-    stopNarration();
-    if (isActive && audioEnabled) {
-      narrate(simulateStationAIntro());
-    }
-  }, [isActive, audioEnabled]);
+    // Station A narration handled by App.js
+  }, [isActive]);
 
   const handleRemoveVertex = () => {
     if (vertices.length > 3) {
@@ -154,11 +151,8 @@ function StationB({ isActive, audioEnabled }) {
   const [feedbackColor, setFeedbackColor] = useState('success');
   
   useEffect(() => {
-    stopNarration();
-    if (isActive && audioEnabled) {
-      narrate(simulateStationBIntro());
-    }
-  }, [isActive, audioEnabled]);
+    // Station B narration handled by App.js
+  }, [isActive]);
 
   const handleTapSide = () => {
     const newCount = sidesTapped + 1;
@@ -264,11 +258,8 @@ function StationC({ isActive, audioEnabled }) {
   const [feedbackColor, setFeedbackColor] = useState('success');
   
   useEffect(() => {
-    stopNarration();
-    if (isActive && audioEnabled) {
-      narrate(simulateStationCIntro());
-    }
-  }, [isActive, audioEnabled]);
+    // Station C narration handled by App.js
+  }, [isActive]);
 
   const handleDragStart = (e, shape) => {
     setDraggedShape(shape);
@@ -368,11 +359,8 @@ function StationD({ isActive, onCompleteSimulate, audioEnabled }) {
   const clue = MYSTERY_CLUES[clueIndex];
   
   useEffect(() => {
-    stopNarration();
-    if (isActive && audioEnabled) {
-      narrate(simulateStationDIntro());
-    }
-  }, [isActive, audioEnabled]);
+    // Station D narration handled by App.js
+  }, [isActive]);
 
   const handleAnswer = (type) => {
     if (revealed) return;

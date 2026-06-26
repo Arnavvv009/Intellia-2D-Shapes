@@ -39,39 +39,63 @@ function App() {
   const [storySlideIndex, setStorySlideIndex] = useState(0);
   const [simulateStation, setSimulateStation] = useState(0);
 
-  // When phase changes, reset nested state
+  // Helper function to get current narration
+  const getCurrentNarration = () => {
+    if (phase === 'landing') return landingNarration();
+    else if (phase === 'wonder') return wonderNarration();
+    else if (phase === 'story') return getStoryNarration(storySlideIndex);
+    else if (phase === 'simulate') {
+      switch(simulateStation) {
+        case 0: return simulateStationAIntro();
+        case 1: return simulateStationBIntro();
+        case 2: return simulateStationCIntro();
+        case 3: return simulateStationDIntro();
+        default: return [];
+      }
+    }
+    else if (phase === 'play') return playNarration();
+    else if (phase === 'reflect') return reflectNarration();
+    return [];
+  };
+
+  // When phase changes, reset nested state and play narration
   useEffect(() => {
     if (phase === 'story') setStorySlideIndex(0);
     if (phase === 'simulate') setSimulateStation(0);
     stopNarration();
+    if (audioEnabled) {
+      const nar = getCurrentNarration();
+      if (nar.length > 0) narrate(nar);
+    }
   }, [phase]);
+  
+  // When story slide changes
+  useEffect(() => {
+    if (phase === 'story' && audioEnabled) {
+      const nar = getCurrentNarration();
+      if (nar.length > 0) narrate(nar);
+    }
+  }, [storySlideIndex, phase, audioEnabled]);
+  
+  // When simulate station changes
+  useEffect(() => {
+    if (phase === 'simulate' && audioEnabled) {
+      const nar = getCurrentNarration();
+      if (nar.length > 0) narrate(nar);
+    }
+  }, [simulateStation, phase, audioEnabled]);
   
   // When audio toggles from OFF to ON, replay current narration
   const prevAudioEnabled = useRef(audioEnabled);
   useEffect(() => {
     if (audioEnabled && !prevAudioEnabled.current) {
-      // Get current narration based on phase
-      let currentNarration = [];
-      if (phase === 'landing') currentNarration = landingNarration();
-      else if (phase === 'wonder') currentNarration = wonderNarration();
-      else if (phase === 'story') currentNarration = getStoryNarration(storySlideIndex);
-      else if (phase === 'simulate') {
-        switch(simulateStation) {
-          case 0: currentNarration = simulateStationAIntro(); break;
-          case 1: currentNarration = simulateStationBIntro(); break;
-          case 2: currentNarration = simulateStationCIntro(); break;
-          case 3: currentNarration = simulateStationDIntro(); break;
-        }
-      }
-      else if (phase === 'play') currentNarration = playNarration();
-      else if (phase === 'reflect') currentNarration = reflectNarration();
-      
+      const currentNarration = getCurrentNarration();
       if (currentNarration.length > 0) {
         narrate(currentNarration);
       }
     }
     prevAudioEnabled.current = audioEnabled;
-  }, [audioEnabled, phase, storySlideIndex, simulateStation]);
+  }, [audioEnabled]);
 
   const handleStartJourney = () => {
     setPhase('wonder');

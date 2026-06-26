@@ -8,11 +8,8 @@ import { landingNarration } from '../utils/narration';
 
 function LandingRoute({ onStartJourney, audioEnabled }) {
   useEffect(() => {
-    stopNarration();
-    if (audioEnabled) {
-      narrate(landingNarration());
-    }
-  }, [audioEnabled]);
+    // Landing narration handled by App.js
+  }, []);
   
   return (
     <div className="landing-screen">

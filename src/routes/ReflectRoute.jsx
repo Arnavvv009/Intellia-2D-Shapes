@@ -11,11 +11,8 @@ import { reflectNarration } from '../utils/narration';
 
 function ReflectRoute({ worldScores, onRestart, onHome, audioEnabled }) {
   useEffect(() => {
-    stopNarration();
-    if (audioEnabled) {
-      narrate(reflectNarration());
-    }
-  }, [audioEnabled]);
+    // Reflect narration handled by App.js
+  }, []);
   const getStars = (score) => {
     if (score === null) return 0;
     if (score >= 9) return 3;
