@@ -42,8 +42,7 @@ const PRESETS = [
   { label: 'Rectangle', vertices: [{ x: 20, y: 25 }, { x: 80, y: 25 }, { x: 80, y: 75 }, { x: 20, y: 75 }] },
 ];
 
-function SimulateRoute({ onCompleteSimulate, audioEnabled }) {
-  const [activeStation, setActiveStation] = useState(0);
+function SimulateRoute({ onCompleteSimulate, audioEnabled, activeStation, setActiveStation }) {
 
   return (
     <div className="phase-screen">

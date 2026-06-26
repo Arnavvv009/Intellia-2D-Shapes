@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import HomePill from './components/chrome/HomePill';
 import PhaseTracker from './components/chrome/PhaseTracker';
@@ -9,7 +9,19 @@ import StoryRoute from './routes/StoryRoute';
 import SimulateRoute from './routes/SimulateRoute';
 import PlayRoute from './routes/PlayRoute';
 import ReflectRoute from './routes/ReflectRoute';
-import { stopNarration } from './utils/audio';
+import { narrate, stopNarration } from './utils/audio';
+import { 
+  landingNarration, 
+  wonderNarration, 
+  getStoryNarration,
+  simulateStationAIntro,
+  simulateStationBIntro,
+  simulateStationCIntro,
+  simulateStationDIntro,
+  playNarration,
+  reflectNarration
+} from './utils/narration';
+import { STORY_SLIDES } from './data/storyContent';
 
 function App() {
   const [phase, setPhase] = useState('landing');
@@ -22,10 +34,44 @@ function App() {
   });
   const [worldScores, setWorldScores] = useState(Array(10).fill(null));
   const [audioEnabled, setAudioEnabled] = useState(true);
+  
+  // Track additional state for audio replay
+  const [storySlideIndex, setStorySlideIndex] = useState(0);
+  const [simulateStation, setSimulateStation] = useState(0);
 
+  // When phase changes, reset nested state
   useEffect(() => {
+    if (phase === 'story') setStorySlideIndex(0);
+    if (phase === 'simulate') setSimulateStation(0);
     stopNarration();
   }, [phase]);
+  
+  // When audio toggles from OFF to ON, replay current narration
+  const prevAudioEnabled = useRef(audioEnabled);
+  useEffect(() => {
+    if (audioEnabled && !prevAudioEnabled.current) {
+      // Get current narration based on phase
+      let currentNarration = [];
+      if (phase === 'landing') currentNarration = landingNarration();
+      else if (phase === 'wonder') currentNarration = wonderNarration();
+      else if (phase === 'story') currentNarration = getStoryNarration(storySlideIndex);
+      else if (phase === 'simulate') {
+        switch(simulateStation) {
+          case 0: currentNarration = simulateStationAIntro(); break;
+          case 1: currentNarration = simulateStationBIntro(); break;
+          case 2: currentNarration = simulateStationCIntro(); break;
+          case 3: currentNarration = simulateStationDIntro(); break;
+        }
+      }
+      else if (phase === 'play') currentNarration = playNarration();
+      else if (phase === 'reflect') currentNarration = reflectNarration();
+      
+      if (currentNarration.length > 0) {
+        narrate(currentNarration);
+      }
+    }
+    prevAudioEnabled.current = audioEnabled;
+  }, [audioEnabled, phase, storySlideIndex, simulateStation]);
 
   const handleStartJourney = () => {
     setPhase('wonder');
@@ -93,8 +139,8 @@ function App() {
       )}
       {phase === 'landing' && <LandingRoute onStartJourney={handleStartJourney} audioEnabled={audioEnabled} />}
       {phase === 'wonder' && <WonderRoute onInvestigate={handleInvestigate} audioEnabled={audioEnabled} />}
-      {phase === 'story' && <StoryRoute onCompleteStory={handleCompleteStory} audioEnabled={audioEnabled} />}
-      {phase === 'simulate' && <SimulateRoute onCompleteSimulate={handleCompleteSimulate} audioEnabled={audioEnabled} />}
+      {phase === 'story' && <StoryRoute onCompleteStory={handleCompleteStory} audioEnabled={audioEnabled} slideIndex={storySlideIndex} setSlideIndex={setStorySlideIndex} />}
+      {phase === 'simulate' && <SimulateRoute onCompleteSimulate={handleCompleteSimulate} audioEnabled={audioEnabled} activeStation={simulateStation} setActiveStation={setSimulateStation} />}
       {phase === 'play' && <PlayRoute worldScores={worldScores} setWorldScores={setWorldScores} onCompletePlay={handleCompletePlay} audioEnabled={audioEnabled} />}
       {phase === 'reflect' && <ReflectRoute worldScores={worldScores} onRestart={handleRestart} onHome={handleHome} audioEnabled={audioEnabled} />}
     </div>

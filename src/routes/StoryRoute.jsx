@@ -7,8 +7,7 @@ import SecondaryDarkButton from '../components/shared/SecondaryDarkButton';
 import { narrate, stopNarration } from '../utils/audio';
 import { getStoryNarration } from '../utils/narration';
 
-function StoryRoute({ onCompleteStory, audioEnabled }) {
-  const [slideIndex, setSlideIndex] = useState(0);
+function StoryRoute({ onCompleteStory, audioEnabled, slideIndex, setSlideIndex }) {
   const slide = STORY_SLIDES[slideIndex];
   const total = STORY_SLIDES.length;
   const pct = Math.round(((slideIndex + 1) / total) * 100);
